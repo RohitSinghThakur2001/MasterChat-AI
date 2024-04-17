@@ -46,6 +46,7 @@ body {
   position: absolute;
   left: 0;
   cursor: pointer;
+
 }
 
 .bottom {
@@ -83,6 +84,7 @@ body {
   position: relative;
 }
 .right #menuBar {
+  display: none;
   font-size: 20px;
 
 }
@@ -121,6 +123,7 @@ i {
   gap: 20px;
   box-sizing: border-box;
   user-select: text;
+ 
 }
 .chat-box::-webkit-scrollbar {
   width: 8px;
@@ -155,6 +158,8 @@ i {
   background: -webkit-linear-gradient(45deg, #cb33e9, #102ae8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  user-select: none;
+  
 }
 .input-div {
   display: flex;
@@ -174,6 +179,7 @@ i {
 
 #send-btn {
   padding: 10px;
+
   margin-left: 10px;
   border: none;
   border-radius: 50%;
@@ -188,9 +194,12 @@ i {
 }
 
 #menuBar {
-  display: none;
+  
   position: absolute;
 }
+
+
+
 
 @media (max-width: 700px) {
   .left-nav {
@@ -219,4 +228,31 @@ i {
     flex-direction: column;
     gap: 10px;
   }
+}
+
+.highlight {
+  background-color: yellow;
+  color: #000000;
+  cursor: crosshair;
+  
+}
+.selected{
+  background-color: #e2ee36;
+  color: #000000;
+  
+  padding: 5px;
+  border-radius: 15px;
+  font-size: 20px;
+  height: 35px;
+  width: 35px;
+  
+}
+.unselected{
+  background-color: #000000;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 15px;
+  font-size: 20px;
+  height: 35px;
+  width: 35px;
 }
