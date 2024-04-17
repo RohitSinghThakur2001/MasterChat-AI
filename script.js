@@ -1,20 +1,27 @@
+
+// variable diclearations
+
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
+let menu = document.querySelector("#menuBar");
+const readerMode = document.querySelector('#readerMode')
+
 let output = "no value in output varible";
 let botDiv;
 let userMessage;
 
-const Genral = "";
 const genralDiv = document.querySelector(".bottom .genral");
-const DBMS = "";
-const COA = "";
-const OS = "";
-const SE = "";
+
+const Genral = "";
+const DBMS = `Hello I am a MCA student. If my question pertains to DBMS(Database management system), you'll provide me with an answer in that context. However, if it's not related to DBMS, you'll kindly let me know: "Sorry, that question is not related to DBMS. But if you have any queries about databases, feel free to ask!" so my question is -->`;
+const COA = `Hello I am a MCA student. If my question pertains to COA(Computer Organization and Architecture), you'll provide me with an answer in that context. However, if it's not related to COA, you'll kindly let me know: "Sorry, that question is not related to Computer Organization and Architecture (COA). But if you have any queries about COA, feel free to ask!" so my question is -->`;
+const OS = `Hello I am a MCA student. If my question pertains to OS(Operating System), you'll provide me with an answer in that context. However, if it's not related to OS, you'll kindly let me know: "Sorry, that question is not related to Operating System (OS). But if you have any queries about OS, feel free to ask!" so my question is -->`;
+const SE = `Hello I am a MCA student. If my question pertains to SE(Software Engineering ), you'll provide me with an answer in that context. However, if it's not related to SE, you'll kindly let me know: "Sorry, that question is not related to Software Engineering (SE). But if you have any queries about SE, feel free to ask!" so my question is -->`;
+
 const defaltText = document.createElement("h1");
 defaltText.classList.add("DefaultText");
-defaltText.innerHTML = ` Hello, I am Master Chat AI <br>
-    How can I help you today?`;
+defaltText.innerHTML = ` Hello, I am Master Chat AI <br>How can I help you today?`;
 chatBox.innerHTML = defaltText.outerHTML;
 
 let aiPersona = Genral;
@@ -23,16 +30,36 @@ let genralChatArr = {
   bot: [],
   user: [],
 };
+let dbmsChatArr = {
+  bot: [],
+  user: [],
+};
+let osChatArr = {
+  bot: [],
+  user: [],
+};
+let coaChatArr = {
+  bot: [],
+  user: [],
+};
+let seChatArr = {
+  bot: [],
+  user: [],
+};
 localStorage.setItem("genralChatArr", JSON.stringify(genralChatArr));
+localStorage.setItem("dbmsChatArr", JSON.stringify(dbmsChatArr));
+localStorage.setItem("osChatArr", JSON.stringify(osChatArr));
+localStorage.setItem("coaChatArr", JSON.stringify(coaChatArr));
+localStorage.setItem("seChatArr", JSON.stringify(seChatArr));
 
-// chalo localhost me chat save kar lete hain
-function setInLocalHost(userMsg, botMsg) {
+// function to set items in local host
+function setInLocalHost(userMsg, botMsg,chatArr) {
   genralChatArr.user.push(userMsg);
   genralChatArr.bot.push(botMsg);
-  localStorage.setItem("genralChatArr", JSON.stringify(genralChatArr));
+  localStorage.setItem(chatArr, JSON.stringify(chatArr));
 }
-console.log(JSON.parse(localStorage.getItem("genralChatArr")).user[0]);
 
+// Gemini ka response yaha par ayega
 function GeminiResponse(msg) {
   // const API_KEY = "AIzaSyDAMBuPY1NqHhuC9Rf2wG07BiXonL1NnPg";
   const API_KEY = "AIzaSyDAMBuP";
@@ -41,7 +68,7 @@ function GeminiResponse(msg) {
     contents: [
       {
         role: "user",
-        parts: [{ text: `${msg} . ${aiPersona}` }],
+        parts: [{ text: ` ${aiPersona}.${msg} .` }],
       },
     ],
   };
@@ -75,11 +102,18 @@ function GeminiResponse(msg) {
       output = output.replace(/\*\*(.*?)\*\*/g, "</div><h4>$1</h4><div>");
 
       makeBotOutput(output);
-      setInLocalHost(userMessage, output);
+      if(aiPersona==Genral)
+      {
+        setInLocalHost(userMessage, output,genralChatArr);
+      }
+      
     });
 }
 
+// when we clicked on send button
 sendBtn.addEventListener("click", appendResopnse);
+
+//append response by gemini
 function appendResopnse() {
   userMessage = userInput.value.trim();
 
@@ -91,15 +125,14 @@ function appendResopnse() {
     appendUserMessage(userMessage);
     GeminiResponse(userMessage);
 
-    // Here you can call your function to send the user's message to your backend for processing and receiving a response.
-
-    // For now, let's just simulate a bot response after a short delay.
     setTimeout(function () {
       appendBotMessage(output);
     }, 500);
     userInput.value = "";
   }
 }
+
+// Here we apppend user question to the chatbox div
 function appendUserMessage(message) {
   const userDiv = document.createElement("div");
   userDiv.classList.add("user-message");
@@ -115,6 +148,7 @@ function appendUserMessage(message) {
   chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll to bottom
 }
 
+// Here we append Gemini response to chatbox
 function appendBotMessage(message) {
   botDiv = document.createElement("div");
   botDiv.classList.add("bot-message");
@@ -148,7 +182,7 @@ function changePersona(e) {
   }
 }
 
-let menu = document.querySelector("#menuBar");
+// when we clicked on menu icon
 menu.addEventListener("click", showNavbar);
 let closeNav = document.querySelector("#closeNavbar");
 closeNav.addEventListener("click", closeNavbar);
@@ -157,22 +191,24 @@ function showNavbar() {
   let navbar = document.querySelector(".left-nav");
   navbar.style.display = "block";
   menu.style.display = "none";
-  
 }
 
 function closeNavbar() {
   let navbar = document.querySelector(".left-nav");
 
-    navbar.style.display = "none";
+  navbar.style.display = "none";
 
   menu.style.display = "block";
 }
+
+// when user type questions it will added in the variable
 userInput.addEventListener("keyup", (e) => {
   if (e.key == "Enter") {
     appendResopnse();
   }
 });
 
+// styling of bot response
 function makeBotOutput(output) {
   botDiv.innerHTML = "";
   let botDP = document.createElement("i");
@@ -183,11 +219,12 @@ function makeBotOutput(output) {
   botDiv.appendChild(botText);
 }
 
+// local got items ko print karna
 function getDataFromLocalHost() {
   let n = genralChatArr.user.length;
   for (let i = 0; i <= n - 1; i++) {
     if (n > 0) {
-    //  chatBox.innerHTML = "";
+      //  chatBox.innerHTML = "";
 
       appendUserMessage(
         JSON.parse(localStorage.getItem("genralChatArr")).user[i]
@@ -201,3 +238,111 @@ function getDataFromLocalHost() {
 }
 
 genralDiv.addEventListener("click", getDataFromLocalHost);
+
+// saveBtn.addEventListener("click", () => {
+//   let usermsg = chatBox.querySelectorAll(".user-message");
+//   let botmsg = chatBox.querySelectorAll(".bot-message");
+
+//   chatBox.innerHTML = "";
+
+//   for (let index = 0; index < usermsg.length - 1; index++) {
+//     const user = usermsg[index].outerHTML;
+//     const bot = botmsg[index].outerHTML;
+
+//     // console.table(user,bot)
+//     let userIndex = 0 + index;
+//     let botIndex = 100 + index;
+//     localStorage.setItem(`${userIndex}`, JSON.stringify(user));
+//     localStorage.setItem(`${botIndex}`, JSON.stringify(bot));
+
+
+//     appendUserMessage(JSON.parse(localStorage.getItem(`${userIndex})`)));
+//     appendBotMessage(JSON.parse(localStorage.getItem(`${botIndex}`)));
+//     makeBotOutput(JSON.parse(localStorage.getItem(`${botIndex}`)));
+//   }
+
+//   // localStorage.setItem()
+// });
+
+
+// manage reading mode 
+let toggle = true;
+
+readerMode.addEventListener("click",()=>{
+
+ const leftnav = document.querySelector(".left-nav")
+const inputdiv =document.querySelector(".input-div")
+
+if(toggle){
+
+  leftnav.style.display = 'none'
+  inputdiv.style.display = 'none'
+  chatBox.style.maxWidth = '100vw'
+  toggle=false;
+  readerMode.className="selected"
+}
+else{
+  
+  leftnav.style.display = 'flex'
+  inputdiv.style.display = 'flex'
+  chatBox.style.maxWidth = '70vw'
+  toggle=true;
+  readerMode.className="unselected"
+}
+
+const elem = document.documentElement; // Get the root element (HTML element)
+if (!document.fullscreenElement) {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen(); // Enter fullscreen mode
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+} else {
+  if (document.exitFullscreen) {
+    document.exitFullscreen(); // Exit fullscreen mode
+  } else if (document.webkitExitFullscreen) { /* Safari */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE11 */
+    document.msExitFullscreen();
+  }
+}
+
+})
+
+
+// manage highlighter 
+let myHL = false;
+const highlighter = document.getElementById("highlightBtn");
+const content = document.getElementById("chat-box");
+
+function doHighlight() {
+  const selection = window.getSelection();
+  if (selection.toString().length > 0) {
+    const range = selection.getRangeAt(0);
+    const span = document.createElement("span");
+    span.classList.add("highlight");
+    range.surroundContents(span);
+  }
+}
+
+highlighter.addEventListener("click", function() {
+  if (!myHL) {
+    myHL = true;
+    highlighter.classList.remove("unselected");
+    highlighter.classList.add("selected");
+    content.addEventListener("mouseup", doHighlight);
+  } else {
+    myHL = false;
+    highlighter.classList.remove("selected");
+    highlighter.classList.add("unselected");
+
+    content.removeEventListener("mouseup", doHighlight);
+  }
+});
+
+
+
+genralDiv.click();
+
