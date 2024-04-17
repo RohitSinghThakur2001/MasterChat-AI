@@ -19,8 +19,8 @@
             <span>Master Chat AI</span>
           </div>
           <div class="bottom">
-            <div onclick="changePersona(this)" class="genral">
-              <span>Genral Chat</span>
+            <div onclick="changePersona(this)" class="genral" >
+              <span >Genral Chat</span>
             </div>
             <div onclick="changePersona(this)" class="DBMS">
               <span>DBMS</span>
@@ -47,12 +47,18 @@
         </div>
         <div class="right">
           <div class="right-navbar">
-            <i id="menuBar" class="ri-menu-line"></i>
+            <div style="display: flex; gap: 10px;">
+              <i id="menuBar" class="ri-menu-line"></i>
             <h3 id="subName"></h3>
+            </div>
+            <div>
+              <button id="highlightBtn" class="unselected" title="Highlighter"><i class="ri-mark-pen-fill"></i></button>
+              <button id="readerMode" class="unselected" title="Reading Mode"><i class="ri-book-open-fill"></i></button>
+     
+            </div>
           </div>
           <div class="chat-box" id="chat-box">
             <!-- Messages will be appended here -->
-         
           </div>
           <div class="input-div">
             <input
@@ -60,7 +66,7 @@
               id="user-input"
               placeholder="Ask to Master Chat AI..."
             />
-            <button id="send-btn"><i class="ri-send-plane-fill"></i></button>
+            <button id="send-btn" title="Send Button"><i class="ri-send-plane-fill"></i></button>
           </div>
         </div>
       </div>
