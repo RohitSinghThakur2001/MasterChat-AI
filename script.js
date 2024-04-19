@@ -61,8 +61,8 @@ function setInLocalHost(userMsg, botMsg,chatArr) {
 
 // Gemini ka response yaha par ayega
 function GeminiResponse(msg) {
-  // const API_KEY = "AIzaSyDAMBuPY1NqHhuC9Rf2wG07BiXonL1NnPg";
-  const API_KEY = "AIzaSyDAMBuP";
+  const API_KEY = "AIzaSyDAMBuPY1NqHhuC9Rf2wG07BiXonL1NnPg";
+  // const API_KEY = "AIzaSyDAMBuP";
 
   const requestData = {
     contents: [
