@@ -1,11 +1,10 @@
-
 // variable diclearations
-
+const mainDiv = document.querySelector("#main");
 const chatBox = document.getElementById("chat-box");
 const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 let menu = document.querySelector("#menuBar");
-const readerMode = document.querySelector('#readerMode')
+const readerMode = document.querySelector("#readerMode");
 
 let output = "no value in output varible";
 let botDiv;
@@ -13,7 +12,7 @@ let userMessage;
 
 const genralDiv = document.querySelector(".bottom .genral");
 
-const Genral = "";
+const GenralChat = "";
 const DBMS = `Hello I am a MCA student. If my question pertains to DBMS(Database management system), you'll provide me with an answer in that context. However, if it's not related to DBMS, you'll kindly let me know: "Sorry, that question is not related to DBMS. But if you have any queries about databases, feel free to ask!" so my question is -->`;
 const COA = `Hello I am a MCA student. If my question pertains to COA(Computer Organization and Architecture), you'll provide me with an answer in that context. However, if it's not related to COA, you'll kindly let me know: "Sorry, that question is not related to Computer Organization and Architecture (COA). But if you have any queries about COA, feel free to ask!" so my question is -->`;
 const OS = `Hello I am a MCA student. If my question pertains to OS(Operating System), you'll provide me with an answer in that context. However, if it's not related to OS, you'll kindly let me know: "Sorry, that question is not related to Operating System (OS). But if you have any queries about OS, feel free to ask!" so my question is -->`;
@@ -24,7 +23,7 @@ defaltText.classList.add("DefaultText");
 defaltText.innerHTML = ` Hello, I am Master Chat AI <br>How can I help you today?`;
 chatBox.innerHTML = defaltText.outerHTML;
 
-let aiPersona = Genral;
+let aiPersona = GenralChat;
 
 let genralChatArr = {
   bot: [],
@@ -53,10 +52,24 @@ localStorage.setItem("coaChatArr", JSON.stringify(coaChatArr));
 localStorage.setItem("seChatArr", JSON.stringify(seChatArr));
 
 // function to set items in local host
-function setInLocalHost(userMsg, botMsg,chatArr) {
-  genralChatArr.user.push(userMsg);
-  genralChatArr.bot.push(botMsg);
-  localStorage.setItem(chatArr, JSON.stringify(chatArr));
+function setInLocalHost(keyName, userMsg, botMsg, chatArr) {
+  chatArr.user.push(userMsg);
+  chatArr.bot.push(botMsg);
+  localStorage.setItem(keyName, JSON.stringify(chatArr));
+}
+
+// function to get items from localHost
+
+function getItemFromHost(keyName, chatArr) {
+  const myObject = JSON.parse(localStorage.getItem(keyName));
+  const userChat = myObject.user;
+  const botChat = myObject.bot;
+
+  for (let index = 0; index < userChat.length; index++) {
+    appendUserMessage(userChat[index]);
+    // appendBotMessage(botChat[index])
+    makeBotOutput(botChat[index]);
+  }
 }
 
 // Gemini ka response yaha par ayega
@@ -101,11 +114,17 @@ function GeminiResponse(msg) {
       output = output.replace(/\*\*(.*?)\*\*/g, "</div><h4>$1</h4><div>");
 
       makeBotOutput(output);
-      if(aiPersona==Genral)
-      {
-        setInLocalHost(userMessage, output,genralChatArr);
+      if (aiPersona == DBMS) {
+        setInLocalHost("dbmsChatArr", userMessage, output, dbmsChatArr);
+      } else if (aiPersona == SE) {
+        setInLocalHost("seChatArr", userMessage, output, seChatArr);
+      } else if (aiPersona == OS) {
+        setInLocalHost("osChatArr", userMessage, output, osChatArr);
+      } else if (aiPersona == COA) {
+        setInLocalHost("coaChatArr", userMessage, output, coaChatArr);
+      } else {
+        setInLocalHost("genralChatArr", userMessage, output, genralChatArr);
       }
-      
     });
 }
 
@@ -149,20 +168,32 @@ function appendUserMessage(message) {
 
 // Here we append Gemini response to chatbox
 function appendBotMessage(message) {
+  makeBotOutput("Loading...");
+}
+
+// styling of bot response
+function makeBotOutput(output) {
   botDiv = document.createElement("div");
   botDiv.classList.add("bot-message");
-  makeBotOutput("Loading...");
+  botDiv.innerHTML = "";
 
-  //   console.log(message);
+  let botDP = document.createElement("i");
+  botDP.classList.add("ri-robot-2-fill");
+
+  let botText = document.createElement("p");
+  botText.innerHTML = output;
+
+  botDiv.appendChild(botDP);
+  botDiv.appendChild(botText);
+
   chatBox.appendChild(botDiv);
   chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll to bottom
 }
-
 let previous = false;
 
 function changePersona(e) {
   chatBox.innerHTML = "";
-  //   getDataFromLocalHost()
+
   if (previous) {
     previous.style.backgroundColor = "#ffff";
     previous.style.color = "black";
@@ -170,8 +201,24 @@ function changePersona(e) {
   previous = e;
   previous.style.backgroundColor = "black";
   previous.style.color = "#ffff";
-  aiPersona = e.innerText;
-  //   console.log(aiPersona);
+  if (e.innerText == "DBMS") {
+    aiPersona = DBMS;
+    getItemFromHost("dbmsChatArr", dbmsChatArr);
+  } else if (e.innerText == "SE") {
+    aiPersona = SE;
+    getItemFromHost("seChatArr", seChatArr);
+  } else if (e.innerText == "COA") {
+    aiPersona = COA;
+    getItemFromHost("coaChatArr", coaChatArr);
+  } else if (e.innerText == "OS") {
+    aiPersona = OS;
+    getItemFromHost("osChatArr", osChatArr);
+  } else {
+    aiPersona = GenralChat;
+    getItemFromHost("genralChatArr", genralChatArr);
+  }
+
+ 
   let subjectName = document.querySelector("#subName");
   subjectName.innerHTML = e.innerText;
 
@@ -206,17 +253,6 @@ userInput.addEventListener("keyup", (e) => {
     appendResopnse();
   }
 });
-
-// styling of bot response
-function makeBotOutput(output) {
-  botDiv.innerHTML = "";
-  let botDP = document.createElement("i");
-  botDP.classList.add("ri-robot-2-fill");
-  botDiv.appendChild(botDP);
-  let botText = document.createElement("p");
-  botText.innerHTML = output;
-  botDiv.appendChild(botText);
-}
 
 // local got items ko print karna
 function getDataFromLocalHost() {
@@ -254,7 +290,6 @@ genralDiv.addEventListener("click", getDataFromLocalHost);
 //     localStorage.setItem(`${userIndex}`, JSON.stringify(user));
 //     localStorage.setItem(`${botIndex}`, JSON.stringify(bot));
 
-
 //     appendUserMessage(JSON.parse(localStorage.getItem(`${userIndex})`)));
 //     appendBotMessage(JSON.parse(localStorage.getItem(`${botIndex}`)));
 //     makeBotOutput(JSON.parse(localStorage.getItem(`${botIndex}`)));
@@ -263,55 +298,56 @@ genralDiv.addEventListener("click", getDataFromLocalHost);
 //   // localStorage.setItem()
 // });
 
-
-// manage reading mode 
+// manage reading mode
 let toggle = true;
 
-readerMode.addEventListener("click",()=>{
+readerMode.addEventListener("click", () => {
+  const leftnav = document.querySelector(".left-nav");
+  const inputdiv = document.querySelector(".input-div");
 
- const leftnav = document.querySelector(".left-nav")
-const inputdiv =document.querySelector(".input-div")
-
-if(toggle){
-
-  leftnav.style.display = 'none'
-  inputdiv.style.display = 'none'
-  chatBox.style.maxWidth = '100vw'
-  toggle=false;
-  readerMode.className="selected"
-}
-else{
-  
-  leftnav.style.display = 'flex'
-  inputdiv.style.display = 'flex'
-  chatBox.style.maxWidth = '70vw'
-  toggle=true;
-  readerMode.className="unselected"
-}
-
-const elem = document.documentElement; // Get the root element (HTML element)
-if (!document.fullscreenElement) {
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen(); // Enter fullscreen mode
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
-    elem.msRequestFullscreen();
+  if (toggle) {
+    leftnav.style.display = "none";
+    inputdiv.style.display = "none";
+    chatBox.style.maxWidth = "100vw";
+    toggle = false;
+    readerMode.className = "selected";
+  } else {
+    leftnav.style.display = "block";
+    inputdiv.style.display = "flex";
+    readerMode.className = "unselected";
+    if (mainDiv.clientWidth < 700) {
+      chatBox.style.minWidth = "100vw";
+    } else {
+      chatBox.style.maxWidth = "70vw";
+    }
+    toggle = true;
   }
-} else {
-  if (document.exitFullscreen) {
-    document.exitFullscreen(); // Exit fullscreen mode
-  } else if (document.webkitExitFullscreen) { /* Safari */
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) { /* IE11 */
-    document.msExitFullscreen();
+
+  const elem = document.documentElement; // Get the root element (HTML element)
+  if (!document.fullscreenElement) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen(); // Enter fullscreen mode
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem.msRequestFullscreen();
+    }
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen(); // Exit fullscreen mode
+    } else if (document.webkitExitFullscreen) {
+      /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+      /* IE11 */
+      document.msExitFullscreen();
+    }
   }
-}
+});
 
-})
-
-
-// manage highlighter 
+// manage highlighter
 let myHL = false;
 const highlighter = document.getElementById("highlightBtn");
 const content = document.getElementById("chat-box");
@@ -326,7 +362,7 @@ function doHighlight() {
   }
 }
 
-highlighter.addEventListener("click", function() {
+highlighter.addEventListener("click", function () {
   if (!myHL) {
     myHL = true;
     highlighter.classList.remove("unselected");
@@ -341,7 +377,30 @@ highlighter.addEventListener("click", function() {
   }
 });
 
-
-
 genralDiv.click();
 
+const leftNav = document.querySelector(".left-nav");
+
+if (leftNav.style.display == "none") {
+  menu.style.display = "block";
+}
+
+//arrow follower
+
+// const arrow = document.querySelector("#arrow")
+// window.addEventListener("mouseover",(dets)=>{
+//   let xprev = 0;
+//   let yprev = 0;
+
+//   const x = dets.clientX;
+//   const y = dets.clientY;
+
+//   const xdiff = x-xprev;
+//   const ydiff = y-yprev;
+
+//   xprev = x;
+//   yprev = y;
+
+//  console.log(dets)
+//   arrow.style.transform =  `translate(${x}px,${y}px)`
+// })
