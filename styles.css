@@ -21,26 +21,31 @@ body {
   position: relative;
   overflow: hidden;
   user-select: none;
+  
 }
 
 .left-nav {
+
   display: flex;
-  justify-content: space-around;
+  justify-content: start;
   flex-direction: column;
-  background-color: #fff;
+  background-color: #ffffff;
   border-right: 1px solid #e0e0e0;
-  padding: 20px;
+  padding: 4vh;
   overflow-y: none;
   width: 20vw;
-  transition: ease-in-out 0.6s;
+  transition: ease-in-out 0.3s;
+
 }
 
+
 .top {
-  padding-bottom: 10px;
+  padding-bottom: 4.5vh;
+  /* padding: 1em 1.2em; */
   text-align: center;
   border-bottom: 1px solid #e0e0e0;
-  gap: 10px;
   position: relative;
+ 
 }
 .top #closeNavbar {
   position: absolute;
@@ -50,29 +55,28 @@ body {
 }
 
 .bottom {
-  padding-top: 20px;
+margin-top: 1.2em;
 }
 
 .bottom div {
-  padding: 10px 0;
+  padding: 0.5em 0;
+  margin-top: 0.5em;
   text-align: center;
   cursor: pointer;
   user-select: none;
 }
 
 .footer {
-  padding: 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 5px;
   justify-content: center;
-  text-align: center;
   align-items: center;
+  gap: 0.5em;
+  text-align: center;
   color: #777;
+  padding-top: 1em;
 }
-.footer .author {
-  padding-top: 20px;
-}
+/* .footer .author {} */
 
 .right {
   flex: 1;
@@ -84,32 +88,51 @@ body {
   position: relative;
 }
 .right #menuBar {
-  display: none;
-  font-size: 20px;
+  font-size: 1.3em;
 
 }
 .right .right-navbar {
   width: 100%;
-  height: 10vh;
-  padding: 5px 20px;
+  padding: 1em 1.2em;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  background-color: rgb(255, 255, 255);
+  border-bottom: 1px solid #e0e0e0;
+  
 }
 .right-navbar #subName {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
 .right-navbar #menuBar {
   position: relative;
+  color: #000000;
 }
 
 i {
   cursor: pointer;
 }
+.right-navbar .right-navbar-right{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+.right-navbar .right-navbar-right button{
+  border: 1px solid #111;
+  cursor: pointer;
+  padding:8px;
+  border-radius: 15px;
+  font-size: 1em;
 
+}
 .chat-box {
+
   flex: 1;
   padding: 20px;
   overflow-y: auto;
@@ -123,8 +146,22 @@ i {
   gap: 20px;
   box-sizing: border-box;
   user-select: text;
- 
+  font-size: 1em;
+  
+
 }
+.chat-box h2{
+ 
+  margin-bottom: 0.5em;
+  margin-top: 0.2em;
+  /* font-size: 1rem; */
+  font-size: 1em;
+}
+.chat-box h3{
+  margin:10px 0 10px 0;
+  font-size: 1em;
+  /* font-size: 1rem; */
+ }
 .chat-box::-webkit-scrollbar {
   width: 8px;
 }
@@ -150,10 +187,12 @@ i {
 .bot-message i {
   font-size: 20px;
   background: -webkit-linear-gradient(#dd48ff, #0400de);
+
+
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-.chat-box > h1 {
+.chat-box >h1 {
   font-size: 50px;
   background: -webkit-linear-gradient(45deg, #cb33e9, #102ae8);
   -webkit-background-clip: text;
@@ -161,6 +200,7 @@ i {
   user-select: none;
   
 }
+
 .input-div {
   display: flex;
   align-items: center;
@@ -183,7 +223,7 @@ i {
   margin-left: 10px;
   border: none;
   border-radius: 50%;
-  background-color: #007bff;
+  background-color: #0b0b0b;
   color: #fff;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -192,13 +232,6 @@ i {
 #send-btn:hover {
   background-color: #0056b3;
 }
-
-#menuBar {
-  
-  position: absolute;
-}
-
-
 
 
 @media (max-width: 700px) {
@@ -214,7 +247,6 @@ i {
   }
   #menuBar {
     display: block;
-    position: relative;
   }
   .right {
     display: flex;
@@ -222,7 +254,7 @@ i {
     justify-content: left;
   }
   .chat-box {
-    max-width: 100vw;
+    min-width: 100vw;
     width: 100vw;
     display: flex;
     flex-direction: column;
@@ -230,29 +262,30 @@ i {
   }
 }
 
+
 .highlight {
   background-color: yellow;
   color: #000000;
   cursor: crosshair;
-  
 }
 .selected{
   background-color: #e2ee36;
   color: #000000;
-  
-  padding: 5px;
-  border-radius: 15px;
-  font-size: 20px;
-  height: 35px;
-  width: 35px;
-  
+
 }
 .unselected{
   background-color: #000000;
   color: #ffffff;
-  padding: 5px;
-  border-radius: 15px;
-  font-size: 20px;
-  height: 35px;
-  width: 35px;
+ 
 }
+#resetSync{
+  background-color: #000000;
+  color: #ffffff;
+}
+
+
+
+
+
+
+
