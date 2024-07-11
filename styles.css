@@ -98,6 +98,7 @@ margin-top: 1.2em;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  gap: 20px;
   background-color: rgb(255, 255, 255);
   border-bottom: 1px solid #e0e0e0;
   
@@ -281,6 +282,9 @@ i {
 #resetSync{
   background-color: #000000;
   color: #ffffff;
+}
+#resetSync:hover{
+  background-color: red;
 }
 
 
