@@ -12,7 +12,8 @@
   </head>
   <body>
     <div id="main">
-      <div id="page1">
+      <!-- <span id="arrow"></span> -->
+      <div id="page1" >
         <div class="left-nav">
           <div class="top">
             <i id="closeNavbar" class="ri-close-large-fill"></i>
@@ -20,7 +21,7 @@
           </div>
           <div class="bottom">
             <div onclick="changePersona(this)" class="genral" >
-              <span >Genral Chat</span>
+              <span >GenralChat</span>
             </div>
             <div onclick="changePersona(this)" class="DBMS">
               <span>DBMS</span>
@@ -51,14 +52,21 @@
               <i id="menuBar" class="ri-menu-line"></i>
             <h3 id="subName"></h3>
             </div>
-            <div>
+            <div class="right-navbar-right">
+              <button id="diceaseFontSize" title="dicease Font Size" onclick="dicreaseSize()">-</button>
+              <button id="inceaseFontSize" title="Incease Font Size" onclick="increaseSize()">+</button>
               <button id="highlightBtn" class="unselected" title="Highlighter"><i class="ri-mark-pen-fill"></i></button>
               <button id="readerMode" class="unselected" title="Reading Mode"><i class="ri-book-open-fill"></i></button>
+              <button id="resetSync" title="Reset Chat"><i class="ri-loop-left-line"></i></button>
+              <button onclick="saveAsPDF()" style="background-color: rgb(255, 55, 0); color: #ffff;">PDF</button>
+              
      
             </div>
           </div>
           <div class="chat-box" id="chat-box">
+            
             <!-- Messages will be appended here -->
+            <!-- <button id="speak-this">Speak</button> -->
           </div>
           <div class="input-div">
             <input
@@ -71,6 +79,9 @@
         </div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script src="fontsize.js"></script>
+    <script src="printpage.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
