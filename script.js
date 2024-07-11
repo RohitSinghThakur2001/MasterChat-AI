@@ -5,26 +5,21 @@ const userInput = document.getElementById("user-input");
 const sendBtn = document.getElementById("send-btn");
 let menu = document.querySelector("#menuBar");
 const readerMode = document.querySelector("#readerMode");
-
 let output = "no value in output varible";
 let botDiv;
+let botText;
 let userMessage;
-
 const genralDiv = document.querySelector(".bottom .genral");
-
 const GenralChat = "";
 const DBMS = `Hello I am a MCA student. If my question pertains to DBMS(Database management system), you'll provide me with an answer in that context. However, if it's not related to DBMS, you'll kindly let me know: "Sorry, that question is not related to DBMS. But if you have any queries about databases, feel free to ask!" so my question is -->`;
 const COA = `Hello I am a MCA student. If my question pertains to COA(Computer Organization and Architecture), you'll provide me with an answer in that context. However, if it's not related to COA, you'll kindly let me know: "Sorry, that question is not related to Computer Organization and Architecture (COA). But if you have any queries about COA, feel free to ask!" so my question is -->`;
 const OS = `Hello I am a MCA student. If my question pertains to OS(Operating System), you'll provide me with an answer in that context. However, if it's not related to OS, you'll kindly let me know: "Sorry, that question is not related to Operating System (OS). But if you have any queries about OS, feel free to ask!" so my question is -->`;
 const SE = `Hello I am a MCA student. If my question pertains to SE(Software Engineering ), you'll provide me with an answer in that context. However, if it's not related to SE, you'll kindly let me know: "Sorry, that question is not related to Software Engineering (SE). But if you have any queries about SE, feel free to ask!" so my question is -->`;
-
 const defaltText = document.createElement("h1");
 defaltText.classList.add("DefaultText");
 defaltText.innerHTML = ` Hello, I am Master Chat AI <br>How can I help you today?`;
 chatBox.innerHTML = defaltText.outerHTML;
-
 let aiPersona = GenralChat;
-
 let genralChatArr = {
   bot: [],
   user: [],
@@ -45,11 +40,15 @@ let seChatArr = {
   bot: [],
   user: [],
 };
-localStorage.setItem("genralChatArr", JSON.stringify(genralChatArr));
-localStorage.setItem("dbmsChatArr", JSON.stringify(dbmsChatArr));
-localStorage.setItem("osChatArr", JSON.stringify(osChatArr));
-localStorage.setItem("coaChatArr", JSON.stringify(coaChatArr));
-localStorage.setItem("seChatArr", JSON.stringify(seChatArr));
+
+// staring the basic application
+if (localStorage.genralChatArr == undefined) {
+  resetAndSync();
+  console.log("localstoreage me items ko set kar diya gya hai ");
+} else {
+  console.log("genarray me item dalo");
+  getItemFromHost("genralChatArr", genralChatArr);
+}
 
 // function to set items in local host
 function setInLocalHost(keyName, userMsg, botMsg, chatArr) {
@@ -59,7 +58,6 @@ function setInLocalHost(keyName, userMsg, botMsg, chatArr) {
 }
 
 // function to get items from localHost
-
 function getItemFromHost(keyName, chatArr) {
   const myObject = JSON.parse(localStorage.getItem(keyName));
   const userChat = myObject.user;
@@ -72,15 +70,16 @@ function getItemFromHost(keyName, chatArr) {
   }
 }
 
-// Gemini ka response yaha par ayega
+// function to get gemini response from api
 function GeminiResponse(msg) {
-  const API_KEY = "AIzaSyDAMBuP";
+  // const API_KEY = "AIzaSyDAMBuP";
+  const API_KEY = "AIzaSyDAMBuPY1NqHhuC9Rf2wG07BiXonL1NnPg";
 
   const requestData = {
     contents: [
       {
         role: "user",
-        parts: [{ text: ` ${aiPersona}.${msg} .` }],
+        parts: [{ text: `${aiPersona}.${msg} .` }],
       },
     ],
   };
@@ -102,18 +101,40 @@ function GeminiResponse(msg) {
       return response.json();
     })
     .then((data) => {
-      //   console.log(data["candidates"][0]["content"]["parts"][0].text);
+      console.log(data["candidates"][0]["content"]["parts"][0].text);
       output = data["candidates"][0]["content"]["parts"][0].text;
-      makeBotOutput(output);
+      // console.log(data);
+
+      output = output.replace(
+        /\* \*\*(.*?)\*\*/g,
+        "<h3 class='subheading'>$1</h3>"
+      ); // Wrap text enclosed in '* **' in <h3> tags
+      output = output.replace(/\*\*(.*?)\*\*/g, "<h2 class='heading'>$1</h2>"); // Wrap text enclosed in '**' in <h2> tags
+      output = output.replace(/\*/g, ""); // Remove the remaining '*' characters
+      // makeBotOutput(output);
+      botText.innerHTML = output;
+      if (aiPersona == DBMS) {
+        setInLocalHost("dbmsChatArr", userMessage, output, dbmsChatArr);
+      } else if (aiPersona == SE) {
+        setInLocalHost("seChatArr", userMessage, output, seChatArr);
+      } else if (aiPersona == OS) {
+        setInLocalHost("osChatArr", userMessage, output, osChatArr);
+      } else if (aiPersona == COA) {
+        setInLocalHost("coaChatArr", userMessage, output, coaChatArr);
+      } else {
+        setInLocalHost("genralChatArr", userMessage, output, genralChatArr);
+      }
 
       //genralChatArr.bot.push(output); //jab gemini response dega tab localhost me save karna hai
     })
     .catch((error) => {
       console.error("There was a problem with the fetch operation:", error);
       output = `**Keys in DBMS (Database Management Systems)** Keys are a fundamental concept in DBMS that are used to uniquely identify records in a table. They are used to ensure data integrity and maintain the relationships between different tables. There are several types of keys in DBMS: **1. Primary Key:** * A unique identifier that uniquely identifies each row in a table. * Can be a single column or a combination of multiple columns. * Ensures that no two rows have the same value for the primary key. **2. Candidate Key:** * A set of columns that can uniquely identify rows in a table. * There can be multiple candidate keys in a table. * Only one is designated as the primary key. **3. Foreign Key:** * A column or set of columns in one table that references the primary key of another table. * Used to establish relationships between tables. * Ensures that data integrity is maintained by preventing incorrect references. **4. Alternate Key:** * A set of columns that can also uniquely identify rows in a table, but is not the primary key. * Provides additional ways to search and retrieve data. **5. Composite Key:** * A primary key that consists of multiple columns. * Used when no single column can uniquely identify rows. **6. Natural Key:** * A key that is derived from the natural attributes of a record. * Typically used for internal processing and is not always unique. **Importance of Keys:** * **Data Integrity:** Keys prevent duplicate entries and ensure that data is accurate and consistent. * **Relationships:** Foreign keys establish relationships between tables, allowing data to be linked and queried across tables. * **Performance Optimization:** Indexes are built on keys to speed up data retrieval. * **Data Replication:** Keys are used to identify and replicate data between systems, ensuring data consistency. **Choosing the Right Key:** * Consider the business requirements and the data being stored. * Identify the most suitable unique identifier for rows. * Avoid using surrogate keys (auto-generated values) if possible. * Use composite keys judiciously as they can impact performance.`;
-      output = output.replace(/\*\*(.*?)\*\*/g, "</div><h4>$1</h4><div>");
+      output = output.replace(/\* \*\*(.*?)\*\*/g, "<h3>$1</h3>"); // Wrap text enclosed in '* **' in <h3> tags
+      output = output.replace(/\*\*(.*?)\*\*/g, "<h2>$1</h2>"); // Wrap text enclosed in '**' in <h2> tags
+      output = output.replace(/\*/g, ""); // Remove the remaining '*' characters
 
-      makeBotOutput(output);
+      makeBotOutput(error);
       if (aiPersona == DBMS) {
         setInLocalHost("dbmsChatArr", userMessage, output, dbmsChatArr);
       } else if (aiPersona == SE) {
@@ -144,10 +165,11 @@ function appendResopnse() {
     GeminiResponse(userMessage);
 
     setTimeout(function () {
-      appendBotMessage(output);
+      makeBotOutput("Loading...");
     }, 500);
     userInput.value = "";
   }
+  console.log(output);
 }
 
 // Here we apppend user question to the chatbox div
@@ -167,11 +189,9 @@ function appendUserMessage(message) {
 }
 
 // Here we append Gemini response to chatbox
-function appendBotMessage(message) {
-  makeBotOutput("Loading...");
-}
 
 // styling of bot response
+
 function makeBotOutput(output) {
   botDiv = document.createElement("div");
   botDiv.classList.add("bot-message");
@@ -180,7 +200,8 @@ function makeBotOutput(output) {
   let botDP = document.createElement("i");
   botDP.classList.add("ri-robot-2-fill");
 
-  let botText = document.createElement("p");
+  botText = document.createElement("div");
+  botText.className = "botText";
   botText.innerHTML = output;
 
   botDiv.appendChild(botDP);
@@ -189,8 +210,9 @@ function makeBotOutput(output) {
   chatBox.appendChild(botDiv);
   chatBox.scrollTop = chatBox.scrollHeight; // Auto scroll to bottom
 }
-let previous = false;
 
+// this is when you changePersona or click options
+let previous = false;
 function changePersona(e) {
   chatBox.innerHTML = "";
 
@@ -213,12 +235,13 @@ function changePersona(e) {
   } else if (e.innerText == "OS") {
     aiPersona = OS;
     getItemFromHost("osChatArr", osChatArr);
-  } else {
+  } else if (e.innerText == "GenralChat") {
     aiPersona = GenralChat;
     getItemFromHost("genralChatArr", genralChatArr);
+  } else {
+    chatBox.innerHTML = defaltText.outerHTML;
   }
 
- 
   let subjectName = document.querySelector("#subName");
   subjectName.innerHTML = e.innerText;
 
@@ -242,8 +265,7 @@ function showNavbar() {
 function closeNavbar() {
   let navbar = document.querySelector(".left-nav");
 
-  navbar.style.display = "none";
-
+  navbar.style.display = 'none'
   menu.style.display = "block";
 }
 
@@ -273,30 +295,6 @@ function getDataFromLocalHost() {
 }
 
 genralDiv.addEventListener("click", getDataFromLocalHost);
-
-// saveBtn.addEventListener("click", () => {
-//   let usermsg = chatBox.querySelectorAll(".user-message");
-//   let botmsg = chatBox.querySelectorAll(".bot-message");
-
-//   chatBox.innerHTML = "";
-
-//   for (let index = 0; index < usermsg.length - 1; index++) {
-//     const user = usermsg[index].outerHTML;
-//     const bot = botmsg[index].outerHTML;
-
-//     // console.table(user,bot)
-//     let userIndex = 0 + index;
-//     let botIndex = 100 + index;
-//     localStorage.setItem(`${userIndex}`, JSON.stringify(user));
-//     localStorage.setItem(`${botIndex}`, JSON.stringify(bot));
-
-//     appendUserMessage(JSON.parse(localStorage.getItem(`${userIndex})`)));
-//     appendBotMessage(JSON.parse(localStorage.getItem(`${botIndex}`)));
-//     makeBotOutput(JSON.parse(localStorage.getItem(`${botIndex}`)));
-//   }
-
-//   // localStorage.setItem()
-// });
 
 // manage reading mode
 let toggle = true;
@@ -385,22 +383,17 @@ if (leftNav.style.display == "none") {
   menu.style.display = "block";
 }
 
-//arrow follower
+let reset = document.querySelector("#resetSync");
+reset.addEventListener("click", resetAndSync);
+function resetAndSync() {
+  localStorage.setItem("genralChatArr", JSON.stringify(genralChatArr));
+  localStorage.setItem("dbmsChatArr", JSON.stringify(dbmsChatArr));
+  localStorage.setItem("osChatArr", JSON.stringify(osChatArr));
+  localStorage.setItem("coaChatArr", JSON.stringify(coaChatArr));
+  localStorage.setItem("seChatArr", JSON.stringify(seChatArr));
 
-// const arrow = document.querySelector("#arrow")
-// window.addEventListener("mouseover",(dets)=>{
-//   let xprev = 0;
-//   let yprev = 0;
+  location.reload();
+  location.reload();
+}
 
-//   const x = dets.clientX;
-//   const y = dets.clientY;
 
-//   const xdiff = x-xprev;
-//   const ydiff = y-yprev;
-
-//   xprev = x;
-//   yprev = y;
-
-//  console.log(dets)
-//   arrow.style.transform =  `translate(${x}px,${y}px)`
-// })
